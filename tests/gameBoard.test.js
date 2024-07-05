@@ -24,7 +24,9 @@ test("is boat in all the correct tiles", () => {
   expect(game.board["3,0"].ship).toBe(undefined);
 });
 
-test("hits boat on tile", () => {
-  let game = new GameBoard();
-  expect(game.board["1,0"].ship.hitCount).toBe(1);
+test("hits boat on tile 0,0", () => {
+  game.receiveAttack([0, 0]);
+  expect(game.board["0,0"].ship.hitCount).toBe(1);
+  game.receiveAttack([1, 0]);
+  expect(game.board["0,0"].ship.hitCount).toBe(2);
 });
