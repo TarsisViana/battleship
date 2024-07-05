@@ -3,7 +3,6 @@ import Ship from "./ship.js";
 export default class GameBoard {
   constructor() {
     this.board = this.makeBoard();
-    this.addShip(3, [0, 0]);
   }
 
   //board is an object indexed by the position of the tiles
@@ -18,7 +17,7 @@ export default class GameBoard {
     return board;
   }
 
-  addShip(size, pos) {
+  addShip(size, pos, vert = false) {
     let ship = new Ship(size);
     //each tile has a link to its ship, if one is placed there
     this.board[pos].ship = ship;
@@ -28,7 +27,11 @@ export default class GameBoard {
     //from the inicial point link the correct adjacent tiles to
     //the ship, depending if horizontal or vertical
     for (let i = 1; i < size; i++) {
-      posx++;
+      if (vert) {
+        posy++;
+      } else {
+        posx++;
+      }
 
       let newP = [posx, posy];
       this.board[newP].ship = ship;
