@@ -3,6 +3,8 @@ import Ship from "./ship.js";
 export default class GameBoard {
   constructor() {
     this.board = this.makeBoard();
+    this.missed = [];
+    this.sunkShips = 0;
   }
 
   //board is an object indexed by the position of the tiles
@@ -42,10 +44,18 @@ export default class GameBoard {
     //each tile can only be attacked once
     if (this.board[pos].hit) return;
     if (this.board[pos].ship) {
+      //hit ship, mark tile, check if sunk, if so update count
       this.board[pos].ship.hit();
       this.board[pos].hit = true;
+
+      if (this.board[pos].ship.isSunk()) {
+        this.sunkShips++;
+      }
     } else {
+      //the tile is marked so it can´t be attacked again
+      //update the missed list
       this.board[pos].hit = true;
+      this.missed.push(pos);
     }
   }
 }
