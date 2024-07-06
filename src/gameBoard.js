@@ -58,6 +58,46 @@ export default class GameBoard {
       this.missed.push(pos);
     }
   }
+
+  fillBoard() {
+    // add boats size 4,3,3,2,1
+    this.addBoatRandom(4);
+    this.addBoatRandom(3);
+    this.addBoatRandom(3);
+    this.addBoatRandom(2);
+    this.addBoatRandom(1);
+  }
+
+  addBoatRandom(size) {
+    let x = parseInt(Math.random() * 8);
+    let y = parseInt(Math.random() * 8);
+    let pos = [x, y];
+
+    let temp = parseInt(Math.random() * 2);
+    let vert = temp == 0;
+
+    if (this.checkBoat(size, pos, vert)) {
+      this.addShip(size, pos, vert);
+    } else {
+      this.addBoatRandom(size, vert);
+    }
+  }
+
+  checkBoat(size, pos, vert) {
+    let [posx, posy] = pos;
+    let newP = pos;
+    for (let i = 0; i < size; i++) {
+      if (posx > 7 || posy > 7) return false;
+      if (this.board[newP].ship) return false;
+      if (vert) {
+        posy++;
+      } else {
+        posx++;
+      }
+      newP = [posx, posy];
+    }
+    return true;
+  }
 }
 
 class Tile {
