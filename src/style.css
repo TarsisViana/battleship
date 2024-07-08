@@ -35,4 +35,20 @@ button.reset{
 
 .game.wrapper{
   display: flex;
+  gap: 150px;
+  justify-content: center;
+}
+
+.board{
+  display: grid;
+  grid-template-columns: repeat(8,1fr);
+  grid-template-rows: repeat(8,1fr);
+}
+
+button.tile{
+  width: 30px;
+  height: 30px;
+}
+button.tile.boat{
+  background-color: rgb(51, 51, 51);
 }

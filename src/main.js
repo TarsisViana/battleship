@@ -1,20 +1,21 @@
-import GameBoard from "./gameBoard.js";
 import "./style.css";
+import renderGame from "./DOMhandler";
+import Player from "./player.js";
+import pubsub from "./pubsub.js";
 
-const board = new GameBoard();
-board.fillBoard();
-console.log(board.board);
-print(board.board);
-function print(board) {
-  for (let i = 0; i < 8; i++) {
-    let str = "";
-    for (let j = 0; j < 8; j++) {
-      if (board[`${i},${j}`].ship) {
-        str += "x ";
-      } else {
-        str += "0 ";
+const playGame = (() => {
+  let player = new Player();
+  let computer = new Player();
+
+  renderGame(player, computer);
+
+  pubsub.subscribe("attack", (pos, turn) => {
+    if (turn == "player") {
+      player.gameBoard.receiveAttack(pos);
+      console.log(player.gameBoard.board[pos]);
+      if (player.gameBoard.board[pos].ship) {
+        console.log(player.gameBoard.board[pos].ship.hitCount);
       }
     }
-    console.log(str);
-  }
-}
+  });
+})();
