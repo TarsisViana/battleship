@@ -1,4 +1,5 @@
 import GameBoard from "./gameBoard.js";
+import "./style.css";
 
 const board = new GameBoard();
 board.fillBoard();

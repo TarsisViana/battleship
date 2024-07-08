@@ -1,0 +1,38 @@
+body{
+  text-align: center;
+  margin: 1em 4em;
+}
+
+div.info.wrapper{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  width: 500px;
+  margin: auto;
+ 
+}
+
+p.player.name{
+  font-size: 1.5rem;
+  margin: 1em;
+
+}
+
+p#player-name{
+  justify-self: start;
+}
+
+p#comp-name{
+  justify-self: end;
+}
+
+
+button.reset{
+  grid-column: 2 span;
+  width: 200px;
+  justify-self: center;
+}
+
+.game.wrapper{
+  display: flex;
+}
