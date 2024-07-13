@@ -52,3 +52,9 @@ button.tile{
 button.tile.boat{
   background-color: rgb(51, 51, 51);
 }
+button.tile.hit{
+  background-color: rgb(206, 43, 43);
+}
+button.tile.miss{
+  background-color: rgb(86, 179, 255);
+}

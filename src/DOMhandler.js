@@ -9,17 +9,18 @@ resetBtn.addEventListener("click", (e) => {
 
 export default function renderGame(player, computer) {
   const playerBoardWrapper = document.querySelector("div.board.player");
-  const CompBoardWrapper = document.querySelector("div.board.computer");
+  const computerBoardWrapper = document.querySelector("div.board.computer");
 
   //if divs are filled reset
   playerBoardWrapper.innerHTML = "";
-  CompBoardWrapper.innerHTML = "";
+  computerBoardWrapper.innerHTML = "";
 
   renderBoard(playerBoardWrapper, "player");
-  renderBoard(CompBoardWrapper, "computer");
+  renderBoard(computerBoardWrapper, "computer");
 
-  markBoats(playerBoardWrapper, player);
-  boardEvents(playerBoardWrapper);
+  markBoats(player, "player");
+  markBoats(computer, "computer");
+  boardEvents(computerBoardWrapper);
 }
 
 function renderBoard(element, className) {
@@ -38,12 +39,17 @@ function renderBoard(element, className) {
   }
 }
 
-function markBoats(element, player) {
+function markBoats(element, id) {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
-      let tile = document.querySelector(`#p${i}-${j}`);
+      let tile;
+      if (id == "computer") {
+        tile = document.querySelector(`#c${i}-${j}`);
+      } else {
+        tile = document.querySelector(`#p${i}-${j}`);
+      }
       let pos = [i, j];
-      if (player.gameBoard.board[pos].ship) {
+      if (element.gameBoard.board[pos].ship) {
         tile.classList.add("boat");
       }
     }
@@ -52,10 +58,15 @@ function markBoats(element, player) {
 
 function boardEvents(element) {
   element.addEventListener("click", (e) => {
-    if (e.target.classList.contains("player")) {
-      pubsub.publish("attack", e.target.getAttribute("pos"), "player");
-    } else {
-      pubsub.publish("attack", e.target.getAttribute("pos"), "computer");
-    }
+    pubsub.publish("attack", e.target, "player");
+
+    e.target.disabled = true;
   });
 }
+
+pubsub.subscribe("hit", (tile) => {
+  tile.classList.add("hit");
+});
+pubsub.subscribe("miss", (tile) => {
+  tile.classList.add("miss");
+});
