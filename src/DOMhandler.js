@@ -1,8 +1,19 @@
 import pubsub from "./pubsub";
 
+//Fixed button events
+const resetBtn = document.querySelector("button.reset");
+
+resetBtn.addEventListener("click", (e) => {
+  pubsub.publish("reset");
+});
+
 export default function renderGame(player, computer) {
   const playerBoardWrapper = document.querySelector("div.board.player");
   const CompBoardWrapper = document.querySelector("div.board.computer");
+
+  //if divs are filled reset
+  playerBoardWrapper.innerHTML = "";
+  CompBoardWrapper.innerHTML = "";
 
   renderBoard(playerBoardWrapper, "player");
   renderBoard(CompBoardWrapper, "computer");
@@ -16,11 +27,11 @@ function renderBoard(element, className) {
     for (let j = 0; j < 8; j++) {
       let tile = document.createElement("button");
       if (className == "player") {
-        tile.id = `p${i}-${j}`;
+        tile.id = `p${j}-${i}`;
       } else {
-        tile.id = `c${i}-${j}`;
+        tile.id = `c${j}-${i}`;
       }
-      tile.setAttribute("pos", `${i},${j}`);
+      tile.setAttribute("pos", `${j},${i}`);
       tile.classList = "board tile " + className;
       element.appendChild(tile);
     }
