@@ -1,5 +1,8 @@
 import pubsub from "./pubsub";
 
+const playerBoardWrapper = document.querySelector("div.board.player");
+const computerBoardWrapper = document.querySelector("div.board.computer");
+
 //Fixed button events
 const resetBtn = document.querySelector("button.reset");
 
@@ -7,10 +10,7 @@ resetBtn.addEventListener("click", (e) => {
   pubsub.publish("reset");
 });
 
-export default function renderGame(player, computer) {
-  const playerBoardWrapper = document.querySelector("div.board.player");
-  const computerBoardWrapper = document.querySelector("div.board.computer");
-
+function renderGame(player, computer) {
   //if divs are filled reset
   playerBoardWrapper.innerHTML = "";
   computerBoardWrapper.innerHTML = "";
@@ -20,7 +20,6 @@ export default function renderGame(player, computer) {
 
   markBoats(player, "player");
   markBoats(computer, "computer");
-  boardEvents(computerBoardWrapper);
 }
 
 function renderBoard(element, className) {
@@ -56,11 +55,27 @@ function markBoats(element, id) {
   }
 }
 
-function boardEvents(element) {
-  element.addEventListener("click", (e) => {
-    pubsub.publish("attack", e.target, "player");
+function setBoardEvents() {
+  //returns a promise that sets event listeners to publish
+  //attack and resolves when a button is pressed
+  return new Promise((resolve) => {
+    computerBoardWrapper.addEventListener("click", (e) => {
+      if (e.target.classList.contains("tile")) {
+        pubsub.publish("attack", e.target);
+        e.target.disabled = true;
+        resolve(e.target.getAttribute("pos"));
+      }
+    });
+  });
+}
 
-    e.target.disabled = true;
+function removeBoardEvents() {
+  computerBoardWrapper.removeEventListener("click", (e) => {
+    if (e.target.classList.contains("tile")) {
+      pubsub.publish("attack", e.target);
+      e.target.disabled = true;
+      resolve(e.target.getAttribute("pos"));
+    }
   });
 }
 
@@ -70,3 +85,5 @@ pubsub.subscribe("hit", (tile) => {
 pubsub.subscribe("miss", (tile) => {
   tile.classList.add("miss");
 });
+
+export { renderGame, setBoardEvents, removeBoardEvents };

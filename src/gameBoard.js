@@ -83,6 +83,7 @@ export default class GameBoard {
     }
   }
 
+  //check if there is overlap
   checkBoat(size, pos, vert) {
     let [posx, posy] = pos;
     let newP = pos;
