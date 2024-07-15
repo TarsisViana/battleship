@@ -12,6 +12,10 @@ resetBtn.addEventListener("click", (e) => {
 
 function renderGame(player, computer) {
   //if divs are filled reset
+
+  const playerBoardWrapper = document.querySelector("div.board.player");
+  const computerBoardWrapper = document.querySelector("div.board.computer");
+
   playerBoardWrapper.innerHTML = "";
   computerBoardWrapper.innerHTML = "";
 
@@ -56,10 +60,11 @@ function markBoats(element, id) {
 }
 
 function setBoardEvents() {
+  const computerBoardWrapper = document.querySelector("div.board.computer");
   //returns a promise that sets event listeners to publish
   //attack and resolves when a button is pressed
   return new Promise((resolve) => {
-    computerBoardWrapper.addEventListener("click", (e) => {
+    computerBoardWrapper.addEventListener("click", function fn(e) {
       if (e.target.classList.contains("tile")) {
         pubsub.publish("attack", e.target);
         e.target.disabled = true;
@@ -70,13 +75,13 @@ function setBoardEvents() {
 }
 
 function removeBoardEvents() {
-  computerBoardWrapper.removeEventListener("click", (e) => {
-    if (e.target.classList.contains("tile")) {
-      pubsub.publish("attack", e.target);
-      e.target.disabled = true;
-      resolve(e.target.getAttribute("pos"));
-    }
-  });
+  const computerBoard = document.querySelector("div.board.computer");
+  const computerWrapper = document.querySelector("div.computer.wrapper");
+  let clone = computerBoard.cloneNode(true);
+
+  computerWrapper.innerHTML = "";
+
+  computerWrapper.appendChild(clone);
 }
 
 pubsub.subscribe("hit", (tile) => {

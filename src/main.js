@@ -9,22 +9,11 @@ const playGame = (() => {
   let computer = new Player();
 
   renderGame(player, computer);
+  gameController(); //start game
 
-  function end(board) {
-    if (board.sunkShips() == 4) return true;
+  function end(gameBoard) {
+    if (gameBoard.sunkShips == 5) return true;
   }
-
-  //while ships are not sunk
-  //players turn:
-  //set envent listeners - ok
-  //wait for input - ok
-  //if hit do it again (check for game end) -ok
-  //if miss change to computer's turn: - remove event listeners XXXX
-  //computers turn:
-  //disable event listeners
-  //get comps play
-  //if hit play again (check for game end)
-  //if not change to players turn
 
   async function gameController() {
     let gameEnd = false;
@@ -40,16 +29,31 @@ const playGame = (() => {
           removeBoardEvents();
           playerTurn = false;
         } else {
-          //check gameEnd
+          //check game end
+          if (end(computer.gameBoard) == true) {
+            alert("You Win!");
+            removeBoardEvents();
+            gameEnd = true;
+          }
         }
       } else {
         console.log("comps turn");
-        break;
+        let [computerPlay, compPos] = await aiPlay(player.gameBoard.board);
+        console.log(computerPlay);
+        pubsub.publish("compAttack", computerPlay);
+
+        if (!player.gameBoard.board[compPos].ship) {
+          playerTurn = true;
+        } else {
+          //check game end
+          if (end(computer.gameBoard) == true) {
+            alert("How could you lose?");
+            gameEnd = true;
+          }
+        }
       }
     }
   }
-
-  gameController();
 
   //link buttons to game logic
   //rethink this to use a game controll func
@@ -59,6 +63,34 @@ const playGame = (() => {
 
     if (computer.gameBoard.board[pos].ship) {
       if (computer.gameBoard.board[pos].ship.isSunk()) {
+        console.log("ship sunk");
+      }
+      pubsub.publish("hit", tile);
+    } else {
+      pubsub.publish("miss", tile);
+    }
+  });
+
+  pubsub.subscribe("attack", (tile) => {
+    let pos = tile.getAttribute("pos");
+    computer.gameBoard.receiveAttack(pos);
+
+    if (computer.gameBoard.board[pos].ship) {
+      if (computer.gameBoard.board[pos].ship.isSunk()) {
+        console.log("ship sunk");
+      }
+      pubsub.publish("hit", tile);
+    } else {
+      pubsub.publish("miss", tile);
+    }
+  });
+
+  pubsub.subscribe("compAttack", (tile) => {
+    let pos = tile.getAttribute("pos");
+    player.gameBoard.receiveAttack(pos);
+
+    if (player.gameBoard.board[pos].ship) {
+      if (player.gameBoard.board[pos].ship.isSunk()) {
         console.log("ship sunk");
       }
       pubsub.publish("hit", tile);
