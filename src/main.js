@@ -37,9 +37,8 @@ const playGame = (() => {
           }
         }
       } else {
-        console.log("comps turn");
         let [computerPlay, compPos] = await aiPlay(player.gameBoard.board);
-        console.log(computerPlay);
+
         pubsub.publish("compAttack", computerPlay);
 
         if (!player.gameBoard.board[compPos].ship) {
@@ -57,20 +56,6 @@ const playGame = (() => {
 
   //link buttons to game logic
   //rethink this to use a game controll func
-  pubsub.subscribe("attack", (tile) => {
-    let pos = tile.getAttribute("pos");
-    computer.gameBoard.receiveAttack(pos);
-
-    if (computer.gameBoard.board[pos].ship) {
-      if (computer.gameBoard.board[pos].ship.isSunk()) {
-        console.log("ship sunk");
-      }
-      pubsub.publish("hit", tile);
-    } else {
-      pubsub.publish("miss", tile);
-    }
-  });
-
   pubsub.subscribe("attack", (tile) => {
     let pos = tile.getAttribute("pos");
     computer.gameBoard.receiveAttack(pos);
@@ -104,11 +89,6 @@ const playGame = (() => {
     computer = new Player();
 
     renderGame(player, computer);
-  });
-
-  //testing
-  document.querySelector(".hey").addEventListener("click", async () => {
-    let hey = await aiPlay();
-    console.log(hey);
+    gameController();
   });
 })();

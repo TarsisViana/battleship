@@ -23,7 +23,6 @@ function renderGame(player, computer) {
   renderBoard(computerBoardWrapper, "computer");
 
   markBoats(player, "player");
-  markBoats(computer, "computer");
 }
 
 function renderBoard(element, className) {
